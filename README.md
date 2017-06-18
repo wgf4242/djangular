@@ -70,4 +70,26 @@ home.components.ts中有硬编码的路径，会有问题，修改一下路径�
 
     cd backend
     source bin/activate
-    
+
+
+    (backend) >python manage.py startapp videos
+
+    # videos.models.py
+    class Video(models.Model):
+        name = models.CharField(max_length=220)
+        slug = models.SlugField(unique=True, blank=True)
+        embed = models.CharField(max_length=120, null=True, blank=True)
+        featured = models.BooleanField(default=False)
+        timestamp = models.DateTimeField(auto_now_add=True)
+
+        def __str__(self): # __unicode__ 
+            return self.name
+
+    # videos.admin.py
+    from .models import Video
+    admin.site.register(Video)
+
+    (backend) >python manage.py makemigrations
+    (backend) >python manage.py migrate
+
+## 9 - Auto Generate Slugs.mp4
