@@ -1,3 +1,13 @@
+# Init
+
+in backend/src folder run
+    
+    python manage.py runserver
+
+in client run
+    
+    ng build --prod --output-path your_path --watch --output-hashing none 
+
 
 ## 4 - Getting Started.mp4
 
