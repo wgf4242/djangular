@@ -103,3 +103,69 @@ home.components.ts中有硬编码的路径，会有问题，修改一下路径�
     (backend) >python manage.py migrate
 
 ## 9 - Auto Generate Slugs.mp4
+
+https://www.codingforentrepreneurs.com/blog/a-unique-slug-generator-for-django/
+
+    # utils.py
+    # https://www.codingforentrepreneurs.com/blog/a-unique-slug-generator-for-django/
+    import random
+    import string
+    from django.utils.text import slugify
+
+    def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
+        return ''.join(random.choice(chars) for _ in range(size))
+
+
+    '''
+    random_string_generator is located here:
+    http://joincfe.com/blog/random-string-generator-in-python/
+    '''
+
+    def unique_slug_generator(instance, new_slug=None):
+        """
+        This is for a Django project and it assumes your instance 
+        has a model with a slug field and a title character (char) field.
+        """
+        if new_slug is not None:
+            slug = new_slug
+        else:
+            slug = slugify(instance.title)
+
+        Klass = instance.__class__
+        qs_exists = Klass.objects.filter(slug=slug).exists()
+        if qs_exists:
+            new_slug = "{slug}-{randstr}".format(
+                        slug=slug,
+                        randstr=random_string_generator(size=4)
+                    )
+            return unique_slug_generator(instance, new_slug=new_slug)
+        return slug
+
+    # models.py
+
+    from django.db import models
+    from django.db.models.signals import pre_save
+    from .utils import unique_slug_generator
+    # Create your models here.
+    class Video(models.Model):
+        # id         = models.IntegerField() auto_increment
+        name            = models.CharField(max_length=220)
+        slug            = models.SlugField(unique=True, blank=True)
+        embed           = models.CharField(max_length=120, help_text='Youtube embed code', null=True, blank=True)
+        featured        = models.BooleanField(default=False)
+        timestamp       = models.DateTimeField(auto_now_add=True)
+
+        def __str__(self): # __unicode__ 
+            return self.name
+
+        @property   # 解决找不到 title的问题。
+        def title(self):
+            return self.name
+
+    def video_pre_save_receiver(sender, instance, *args, **kwargs):
+        if not instance.slug:
+            instance.slug = unique_slug_generator(instance)
+
+    pre_save.connect(video_pre_save_receiver, sender=Video)
+
+## 10 - Video API List.mp4
