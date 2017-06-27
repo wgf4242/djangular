@@ -18,6 +18,13 @@ export class VideoService {
               .map(response=>response.json())
               .catch(this.handleError)
   }
+  
+  featured(){
+      return this.http.get(endpoint + "featured/")
+              .map(response=>response.json())
+              .catch(this.handleError)
+  }
+
   get(slug){
     console.log(endpoint + slug + "/");
     return this.http.get(endpoint + slug + "/")
@@ -40,18 +47,22 @@ export class VideoService {
   }
 
   search(query){
-    return this.http.get(endpoint)
-              .map(response=>{
-                     let data = []
-                     let req = response.json().filter(item=>{
-                                    if (item.name.indexOf(query) >=0) {
-                                         data.push(item)
-                                    }
-                                })
+    let queryString = `?q=${query}`
+        return this.http.get(endpoint + queryString)
+                .map(response=>response.json())
+                .catch(this.handleError)
+  //   return this.http.get(endpoint)
+  //             .map(response=>{
+  //                    let data = []
+  //                    let req = response.json().filter(item=>{
+  //                                   if (item.name.indexOf(query) >=0) {
+  //                                        data.push(item)
+  //                                   }
+  //                               })
                      
-                     return data
-               })
-              .catch(this.handleError)
+  //                    return data
+  //              })
+  //             .catch(this.handleError)
 
   }
 

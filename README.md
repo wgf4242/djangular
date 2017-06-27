@@ -277,3 +277,32 @@ https://www.codingforentrepreneurs.com/blog/common-regular-expressions-for-djang
       return this.http.get(endpoint + slug + "/")
               .map(response=>response.json())
               .catch(this.handleError);
+
+## 13 - Backend API Search.mp4
+    
+    # api.urls.py
+    url(r'^featured/$', VideoFeatured.as_view()),
+    
+    # views.py
+    class VideoFeatured(generics.ListAPIView):
+        serializer_class         = VideoSerializer
+        permission_classes       = []
+        authentication_classes   = []
+
+        def get_queryset(self):
+            query = self.request.GET.get("q")
+            if query:
+                qs = Video.objects.filter(name__icontains=query).filter(featured=True)
+            else:
+                qs = Video.objects.filter(featured=True)
+            return qs
+
+    # videos.service.ts
+    featured(){
+        return this.http.get(endpoint + "featured/")
+                .map(response=>response.json())
+                .catch(this.handleError)
+    }
+
+    # home.components.ts
+      this.homeImageList = data as [VideoItem]

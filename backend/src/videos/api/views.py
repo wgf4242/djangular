@@ -7,13 +7,17 @@ from videos.models import Video
 from .serializers import VideoSerializer, VideoDetailSerializer
 
 class VideoList(generics.ListAPIView):
-    queryset				 = Video.objects.all()
     serializer_class		 = VideoSerializer
     permission_classes		 = []
     authentication_classes	 = []
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+        if query:
+            qs = Video.objects.filter(name__icontains=query)
+        else:
+            qs = Video.objects.all()
+        return qs
 
 class VideoDetail(generics.RetrieveAPIView):
     queryset				 = Video.objects.all()
@@ -23,5 +27,18 @@ class VideoDetail(generics.RetrieveAPIView):
     authentication_classes	 = []
 
     def get_queryset(self):
-    	print("working")
     	return Video.objects.all()
+
+class VideoFeatured(generics.ListAPIView):
+    serializer_class         = VideoSerializer
+    permission_classes       = []
+    authentication_classes   = []
+
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+        if query:
+            qs = Video.objects.filter(name__icontains=query).filter(featured=True)
+        else:
+            qs = Video.objects.filter(featured=True)
+        return qs
+
