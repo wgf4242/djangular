@@ -6,6 +6,7 @@ in backend/src folder run
 
 in client run
     
+    # edit your_path below
     ng build --prod --output-path your_path --watch --output-hashing none 
 
 
@@ -169,3 +170,110 @@ https://www.codingforentrepreneurs.com/blog/a-unique-slug-generator-for-django/
     pre_save.connect(video_pre_save_receiver, sender=Video)
 
 ## 10 - Video API List.mp4
+
+
+    # serializers.py
+    from rest_framework import serializers
+    from videos.models import Video
+
+    class VideoSerializer(serializers.ModelSerializer):
+        image = serializers.SerializerMethodField()
+        class Meta:
+            model = Video
+            fields = ['name', 'slug', 'embed', 'featured', 'image']
+
+        def get_image(self, obj):
+            return "/static/ang/assets/images/nature/4.jpg"
+
+    # views.py
+    from django.contrib.auth.models import User
+
+    from rest_framework import generics
+    from rest_framework.permissions import IsAdminUser
+
+    from videos.models import Video
+    from .serializers import VideoSerializer
+
+    class VideoList(generics.ListAPIView):
+        queryset                 = Video.objects.all()
+        serializer_class         = VideoSerializer
+        permission_classes       = []
+        authentication_classes   = []
+
+    # urls.py
+    from .views import VideoList
+
+    from django.conf.urls import url
+
+    urlpatterns = [
+        url(r'^$', VideoList.as_view(), name='list'),
+    ]
+
+    # settings.py add 'rest_framework' to app
+    
+    # urls.py -- tryangualr 
+    # url(r'^api/videos/', include('videos.api.urls')),
+
+## 11 - Integrate Django API with Angular.mp4
+    
+    # video.serivce.ts 
+    const endpoint = '/api/videos/'
+
+## 12 - Detail View.mp4
+
+RetrieveAPIView like DetailView in Rest Framework
+
+https://www.codingforentrepreneurs.com/blog/common-regular-expressions-for-django-urls/
+
+    # error
+    Expected view VideoDetail to be called with a URL keyword argument named "pk". Fix your URL conf, or set the `.lookup_field` attribute on the view correctly.
+
+
+
+    #api.urls.py
+    from django.conf.urls import url
+
+    from .views import VideoList, VideoDetail
+
+    urlpatterns = [
+        url(r'^$', VideoList.as_view(), name='list'),
+        url(r'^(?P<slug>[\w-]+)/$', VideoDetail.as_view()),
+    ]
+
+    # serializers.py
+    from rest_framework import serializers
+    from videos.models import Video
+
+    class VideoDetailSerializer(serializers.ModelSerializer):
+        image = serializers.SerializerMethodField()
+        is_promo = serializers.SerializerMethodField()
+        class Meta:
+            model = Video
+            fields = ['name', 'slug', 'embed', 'featured', 'image', 'is_promo', ]
+        def get_image(self, obj):
+            return "/static/ang/assets/images/nature/4.jpg"
+
+        def get_is_promo(self, obj):
+            return False
+
+    # views.py
+    from .serializers import VideoSerializer, VideoDetailSerializer
+
+    class VideoDetail(generics.RetrieveAPIView):
+        queryset                 = Video.objects.all()
+        serializer_class         = VideoDetailSerializer
+        lookup_field             = 'slug'
+        permission_classes       = []
+        authentication_classes   = []
+
+        def get_queryset(self):
+            print("working")
+            return Video.objects.all()
+    
+    #videos.service.ts
+    
+    get(slug){
+      console.log(endpoint + slug + "/");
+      return this.http.get(endpoint + slug + "/")
+              .map(response=>response.json())
+              .catch(this.handleError);

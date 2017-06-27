@@ -5,11 +5,13 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 
-const endpoint = '/static/ang/assets/json/videos.json' // http://www.yourdomain.com/api/videos/
+// const endpoint = '/static/ang/assets/json/videos.json' // http://www.yourdomain.com/api/videos/
+const endpoint = '/api/videos/'
 
 @Injectable()
 export class VideoService {
-  constructor(private http: Http) { }
+  constructor(private http: Http) { 
+  }
 
   list(){
       return this.http.get(endpoint)
@@ -17,19 +19,24 @@ export class VideoService {
               .catch(this.handleError)
   }
   get(slug){
-      return this.http.get(endpoint)
-              .map(response=>{
-                     let data = response.json().filter(item=>{
-                                      if (item.slug == slug) {
-                                          return item
-                                      }
-                                  })
-                     if (data.length == 1){
-                         return data[0]
-                     }
-                     return {}
-               })
-              .catch(this.handleError)
+    console.log(endpoint + slug + "/");
+    return this.http.get(endpoint + slug + "/")
+            .map(response=>response.json())
+            .catch(this.handleError);
+    
+  //     return this.http.get(endpoint)
+  //             .map(response=>{
+  //                    let data = response.json().filter(item=>{
+  //                                     if (item.slug == slug) {
+  //                                         return item
+  //                                     }
+  //                                 })
+  //                    if (data.length == 1){
+  //                        return data[0]
+  //                    }
+  //                    return {}
+  //              })
+  //             .catch(this.handleError)
   }
 
   search(query){

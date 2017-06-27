@@ -52,3 +52,14 @@ backend/pip-selfcheck.json
 
 *.sublime-workspace
 **/node_modules
+**/Include/
+**/Lib/
+**/Scripts/
+**/tcl/
+**/pip-selfcheck.json
+**/.idea/
+**/__pycache__/
+**/migrations/
+**/db.sqlite3
+**/_gsdata_/
+*.sublime-workspace
