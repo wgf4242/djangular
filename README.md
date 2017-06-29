@@ -306,3 +306,98 @@ https://www.codingforentrepreneurs.com/blog/common-regular-expressions-for-djang
 
     # home.components.ts
       this.homeImageList = data as [VideoItem]
+
+## 14 - Better Backend Queries.mp4
+
+    # models.py
+    from django.db.models import Q
+
+    class VideoQuerySet(models.query.QuerySet):
+        def active(self):
+            return self.filter(active=True)
+
+        def featured(self):
+            return self.filter(featured=True)
+
+        def search(self, query):
+            return self.filter(
+                        Q(name__icontains=query) | 
+                        Q(slug__icontains=query) | 
+                        Q(embed__icontains=query) 
+                        )
+
+
+    class VideoManager(models.Manager):
+        def get_queryset(self):
+            return VideoQuerySet(self.model, using=self._db)
+
+        def all(self):
+            return self.get_queryset().active()
+
+        def featured(self):
+            return self.get_queryset().featured().active()
+
+        def search(self, query):
+            return self.get_queryset().search(query).active()
+
+    class Video(models.Model):
+        objects = VideoManager()
+
+    # views.py
+    class VideoList(generics.ListAPIView):
+
+        def get_queryset(self):
+            query = self.request.GET.get("q")
+            if query:
+                qs = Video.objects.search(query)
+            else:
+                qs = Video.objects.all()
+            return qs
+    
+    class VideoFeatured(generics.ListAPIView):
+        def get_queryset(self):
+            query = self.request.GET.get("q")
+            if query:
+                qs = Video.objects.featured().search(query)
+            else:
+                qs = Video.objects.featured()
+            return qs
+
+
+## 15 - Handling 404 with Object Lookups.mp4
+    
+    # video-detail.comoponents.ts
+    import {  Router } from '@angular/router';
+    export class VideoDetailComponent implements OnInit, OnDestroy {
+        error:Boolean;
+      constructor(private router: Router) { }
+
+      ngOnInit() {
+          this.routeSub = this.route.params.subscribe(params => {
+              this.slug = params['slug']
+              this.req = this._video.get(this.slug).subscribe(data=>{
+                this.video = data as VideoItem
+              }, error=>{
+                console.log(error);
+                this.error = true;
+                //this.router.navigate(['/videos']);
+              })
+          })
+      }
+
+
+    # video-detail.comoponents.html
+    <div *ngIf="!video && !error">Loading</div>
+    <div *ngIf='error'>Erorr, Please try again. </div>
+
+    # videos.service.ts
+    private handleError(error:any, caught:any): any{
+        // console.log(error, caught)
+        // log errors
+        if (error.status == 404) {
+          alert("Oopps. Not found")
+        } else {
+          alert("Something went wrong, Please try again.")
+        }
+    }
+    

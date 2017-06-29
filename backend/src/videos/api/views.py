@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser
 
@@ -14,7 +13,8 @@ class VideoList(generics.ListAPIView):
     def get_queryset(self):
         query = self.request.GET.get("q")
         if query:
-            qs = Video.objects.filter(name__icontains=query)
+            # qs = Video.objects.filter(name__icontains=query)
+            qs = Video.objects.search(query)
         else:
             qs = Video.objects.all()
         return qs
@@ -37,8 +37,8 @@ class VideoFeatured(generics.ListAPIView):
     def get_queryset(self):
         query = self.request.GET.get("q")
         if query:
-            qs = Video.objects.filter(name__icontains=query).filter(featured=True)
+            qs = Video.objects.featured().search(query)
         else:
-            qs = Video.objects.filter(featured=True)
+            qs = Video.objects.featured()
         return qs
 
