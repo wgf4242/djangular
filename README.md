@@ -401,3 +401,32 @@ https://www.codingforentrepreneurs.com/blog/common-regular-expressions-for-djang
         }
     }
     
+
+## 16 - Handle Angular Http Error.mp4
+
+    # videos.service.ts
+    import { Observable } from 'rxjs/Rx';
+    
+    private handleError (error: Response | any) {
+      // In a real world app, you might use a remote logging infrastructure
+      let errMsg: string;
+      if (error instanceof Response) {
+        const body = error.json() || '';
+        const err = body.error || JSON.stringify(body);
+        errMsg = `${error.status} - ${error.statusText || '' }`;
+      } else {
+        // errMsg = error.message ? error.message : error.toString();
+        errMsg = "Server error occurred please try again.";
+      }
+      console.error(errMsg);
+      return Observable.throw(errMsg);
+    }
+    
+    # video-detail.components.ts
+    this.req = this._video.get(this.slug).subscribe(data=>{
+      this.video = data as VideoItem
+    }, error=> this.errorStr = error)
+
+    # video-detail.components.html
+    <div *ngIf="!video && !errorStr">Loading</div>
+    <div *ngIf='errorStr' class="text-center"><h1>{{ errorStr }}</h1> </div>
