@@ -459,4 +459,27 @@ ng g component not-found
             component: NotFoundComponent,
         }
 
+## 18 - Go Live with Heroku + Django + Angular.mp4
 
+    pip install dj-database-url dj-static django-toolbelt gunicorn psycopg2 static3
+
+    python manage.py collectstatic
+
+    heroku create
+    heroku create tryangulardjango
+    git remote -v
+    git remote remove heroku
+    git remote add heroku XXXX.git
+    git add --all
+    git commit -m "Django to Heroku"
+    git status
+    git add --all
+    git commit -m "Initial commit"
+    git push heroku master
+
+    python -V
+    git add .
+    git commit -m "Update runtime"
+    git push heroku master && heroku run python manage.py migrate
+    heroku addons:create heroku-postgresql-hobby-dev
+    heroku run python manage.py createsuperuser
