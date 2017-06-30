@@ -430,3 +430,33 @@ https://www.codingforentrepreneurs.com/blog/common-regular-expressions-for-djang
     # video-detail.components.html
     <div *ngIf="!video && !errorStr">Loading</div>
     <div *ngIf='errorStr' class="text-center"><h1>{{ errorStr }}</h1> </div>
+
+
+## 17 - Catch All 404 & 500 Server Page.mp4
+ng g component not-found
+
+    # not-found.components.html
+    <div class="text-center">
+        <h1>404 - Page Not Found</h1>
+    </div>
+
+    # backend/src/templates/500.html , a clone of ang_home replace body
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <h1>Try Angular + Django</h1>
+                <hr>
+                <h1>500 Server Error | Please try again later. We have been notified.</h1>
+            </div>
+        </div>
+    </div>
+
+    # app.routing.ts
+
+    const appRoutes: Routes = [
+        {
+            path: "**",
+            component: NotFoundComponent,
+        }
+
+

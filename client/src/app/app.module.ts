@@ -11,6 +11,7 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
 import { HomeComponent } from './home/home.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 import { SafePipe } from './utility/safe.pipe';
 import { SearchComponent } from './search/search.component';
 import { SearchDetailComponent } from './search-detail/search-detail.component';
@@ -21,12 +22,13 @@ import { VideoDetailComponent } from './video-detail/video-detail.component';
 @NgModule({
   declarations: [
     AppComponent,
-    VideoListComponent,
-    VideoDetailComponent,
-    SafePipe,
     HomeComponent,
+    NotFoundComponent,
+    SafePipe,
     SearchComponent,
-    SearchDetailComponent
+    SearchDetailComponent,
+    VideoListComponent,
+    VideoDetailComponent
   ],
   imports: [
     // ngx-bootstrap
