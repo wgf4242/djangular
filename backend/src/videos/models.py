@@ -36,7 +36,7 @@ class Video(models.Model):
 	name			= models.CharField(max_length=220)
 	slug			= models.SlugField(unique=True, blank=True)
 	embed			= models.CharField(max_length=120, help_text='Youtube embed code', null=True, blank=True)
-	image_path		= models.CharField(max_length=120, default="/static/ang/assets/images/nature/4.jpg", blank=True, null=True)
+	# image_path		= models.CharField(max_length=120, default="/static/ang/assets/images/nature/4.jpg", blank=True, null=True)
 	image 			= models.ImageField(upload_to="images/", null=True, blank=True)
 	active 		= models.BooleanField(default=True)
 	featured 		= models.BooleanField(default=False)

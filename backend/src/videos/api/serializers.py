@@ -8,8 +8,8 @@ class VideoSerializer(serializers.ModelSerializer):
 		fields = ['name', 'slug', 'embed', 'featured', 'image']
 
 	def get_image(self, obj):
-		if obj.image_path:
-			return str(obj.image_path)
+		if obj.image:
+			return str(obj.image.url)
 		return "/static/ang/assets/images/nature/4.jpg"
 
 class VideoDetailSerializer(serializers.ModelSerializer):
@@ -27,6 +27,8 @@ class VideoDetailSerializer(serializers.ModelSerializer):
 			]
 
 	def get_image(self, obj):
+		if obj.image:
+			return str(obj.image.url)
 		return "/static/ang/assets/images/nature/4.jpg"
 
 	def get_is_promo(self, obj):
