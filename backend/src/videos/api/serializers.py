@@ -1,3 +1,4 @@
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from rest_framework import serializers
 from videos.models import Video
 
@@ -10,7 +11,7 @@ class VideoSerializer(serializers.ModelSerializer):
 	def get_image(self, obj):
 		if obj.image:
 			return str(obj.image.url)
-		return "/static/ang/assets/images/nature/4.jpg"
+		return static("ang/assets/images/nature/4.jpg")
 
 class VideoDetailSerializer(serializers.ModelSerializer):
 	image = serializers.SerializerMethodField()
@@ -29,7 +30,7 @@ class VideoDetailSerializer(serializers.ModelSerializer):
 	def get_image(self, obj):
 		if obj.image:
 			return str(obj.image.url)
-		return "/static/ang/assets/images/nature/4.jpg"
+		return static("ang/assets/images/nature/4.jpg")
 
 	def get_is_promo(self, obj):
 		return False
