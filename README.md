@@ -483,3 +483,37 @@ ng g component not-found
     git push heroku master && heroku run python manage.py migrate
     heroku addons:create heroku-postgresql-hobby-dev
     heroku run python manage.py createsuperuser
+
+
+## 19 - Backend Image Path.mp4
+
+    # videos.models.py
+    class Video(models.Model):
+        image_path      = models.CharField(max_length=120, default="/static/ang/assets/images/nature/4.jpg", blank=True, null=True)
+
+    git add --all
+    git commit -m "Update models"
+    git push heroku master && heroku run python managy.py migrate
+
+    # serializers.py
+    class VideoSerializer(serializers.ModelSerializer):
+        def get_image(self, obj):
+            if obj.image_path:
+                return str(obj.image_path)
+            return "/static/ang/assets/images/nature/4.jpg"
+
+    git add --all
+    git commit -m "Update serializers"
+    git push heroku master
+
+## 23 - Image Field & Uploading Images.mp4
+
+pip install Pillow
+
+    # models.py
+    class Video(models.Model):
+        # image_path        = models.CharField(max_length=120, default="/static/ang/assets/images/nature/4.jpg", blank=True, null=True)
+        image           = models.ImageField(upload_to="images/", null=True, blank=True)
+
+git add .
+git commit -m "Update and add Image Field"
